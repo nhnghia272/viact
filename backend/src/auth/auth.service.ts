@@ -7,7 +7,8 @@ import { SignUpDto } from './dto/signup.dto'
 import { TokenDto } from './dto/token.dto'
 import { User } from '../users/user.entity'
 import { toAsync } from '../utils'
-import { JWT_SECRET } from '../constants'
+import { Constants } from '../constants'
+import { Messages } from '../messages'
 import * as bcrypt from 'bcrypt'
 
 @Injectable()
@@ -16,20 +17,20 @@ export class AuthService {
 
   async signIn(signInDto: SignInDto): Promise<TokenDto> {
     const user = await this.usersService.findOneByUsernameOrEmail(signInDto.username, signInDto.username)
-    if (!user) throw new BadRequestException('Username or password is incorrect')
+    if (!user) throw new BadRequestException(Messages.USERNAME_PASSWORD_INCORRECT)
 
     const isMatch = await bcrypt.compare(signInDto.password, user.password)
-    if (!isMatch) throw new BadRequestException('Username or password is incorrect')
+    if (!isMatch) throw new BadRequestException(Messages.USERNAME_PASSWORD_INCORRECT)
 
     const { id: userId, firstName, lastName, username, email, phone } = user
     const payload = { userId, firstName, lastName, username, email, phone }
 
-    return { accessToken: await this.jwtService.signAsync(payload, { secret: JWT_SECRET }) }
+    return { accessToken: await this.jwtService.signAsync(payload, { secret: Constants.JWT_SECRET }) }
   }
 
   async signUp(signUpDto: SignUpDto): Promise<void> {
     const found = await this.usersService.findOneByUsernameOrEmail(signUpDto.username, signUpDto.email)
-    if (found) throw new ConflictException('The email or username exists')
+    if (found) throw new ConflictException(Messages.USERNAME_EMAIL_EXISTS)
 
     const salt = await bcrypt.genSalt()
     const password = await bcrypt.hash(signUpDto.password, salt)
@@ -44,6 +45,6 @@ export class AuthService {
     user.password = password
 
     const { err } = await toAsync<User, QueryFailedError>(this.usersService.save(user))
-    if (err) throw new ConflictException('The email or username exists')
+    if (err) throw new ConflictException(Messages.USERNAME_EMAIL_EXISTS)
   }
 }

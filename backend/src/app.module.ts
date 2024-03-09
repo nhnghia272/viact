@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { MYSQL_URL } from './constants'
+import { Constants } from './constants'
 import { AuthModule } from './auth/auth.module'
 import { UsersModule } from './users/users.module'
 import { User } from './users/user.entity'
@@ -9,7 +9,7 @@ import { User } from './users/user.entity'
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      url: MYSQL_URL,
+      url: Constants.MYSQL_URL,
       synchronize: true,
       entities: [User]
     }),
