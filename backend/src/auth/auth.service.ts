@@ -7,7 +7,7 @@ import { SignUpDto } from './dto/signup.dto'
 import { TokenDto } from './dto/token.dto'
 import { User } from '../users/user.entity'
 import { toAsync } from '../utils'
-import { Constants } from '../constants'
+import { Config } from '../config'
 import { Messages } from '../messages'
 import * as bcrypt from 'bcrypt'
 
@@ -25,7 +25,7 @@ export class AuthService {
     const { id: userId, firstName, lastName, username, email, phone } = user
     const payload = { userId, firstName, lastName, username, email, phone }
 
-    return { accessToken: await this.jwtService.signAsync(payload, { secret: Constants.JWT_SECRET }) }
+    return { accessToken: await this.jwtService.signAsync(payload, { secret: Config.JWT_SECRET }) }
   }
 
   async signUp(signUpDto: SignUpDto): Promise<void> {
