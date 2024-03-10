@@ -78,14 +78,7 @@ export default function SignUp() {
       username: Yup.string().min(3).required(),
       email: Yup.string().email().required(),
       phone: Yup.string().required(),
-      password: Yup
-        .string()
-        .min(8, 'Password must be at least 8 characters')
-        .matches(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-          'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
-        )
-        .required(),
+      password: Yup.string().min(8,).matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/).required(),
       confirmPassword: Yup.string().oneOf([Yup.ref('password')]).required(),
     }),
     onSubmit: async (values) => {
